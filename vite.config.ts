@@ -4,7 +4,7 @@ import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/antigone/',
+  base: '/antigoneGs/',
   
   optimizeDeps: {
     exclude: ['lucide-react'],
