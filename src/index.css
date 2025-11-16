@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-slate-900;
+    @apply text-slate-200;
+    @apply min-h-screen font-sans;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Mobile-friendly touch targets and spacing helpers */
+  .touch-large > * {
+    padding: 12px !important;
+  }
+
+  /* Ensure mobile menu covers content lightly */
+  .mobile-menu-backdrop {
+    background: rgba(2,6,23,0.6);
+    backdrop-filter: blur(6px);
+  }
+}
