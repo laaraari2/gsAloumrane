@@ -55,17 +55,17 @@ const Login: React.FC = () => {
   // Show loading while checking auth
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4"></div>
-          <p className="text-slate-400">{i18n.language === 'ar' ? 'جاري التحميل...' : 'Chargement...'}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">{i18n.language === 'ar' ? 'جاري التحميل...' : 'Chargement...'}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-900 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -80,32 +80,57 @@ const Login: React.FC = () => {
             transition={{ delay: 0.2, type: 'spring', stiffness: 200, damping: 15 }}
             className="mx-auto mb-6 flex items-center justify-center relative"
           >
-            {/* Outer glow circle */}
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500/30 via-pink-500/30 to-purple-500/30 blur-xl animate-pulse"></div>
+            {/* Outer glow circle - Lighter version for light theme */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-100 via-pink-100 to-purple-100 blur-xl animate-pulse"></div>
             
             {/* Main circle container */}
-            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-slate-800 via-slate-700 to-slate-800 p-1 shadow-2xl border-2 border-purple-500/50">
+            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full bg-gradient-to-br from-gray-100 via-gray-50 to-gray-100 p-1 shadow-lg border-2 border-purple-100">
               {/* Inner gradient border */}
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-600/20 via-pink-600/20 to-purple-600/20 p-1">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50 p-1">
                 {/* Image container */}
-                <div className="w-full h-full rounded-full overflow-hidden bg-slate-800 flex items-center justify-center">
+                <div className="w-full h-full rounded-full overflow-hidden bg-white flex items-center justify-center border border-gray-200">
                   <img
-                    src="/logo.jpg"
+                    src={`${import.meta.env.VITE_BASE_URL || '/antigoneGs/'}logo-new.jpg?${new Date().getTime()}`}
                     alt={t('login.institution_name')}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       // Fallback if image fails to load
-                      console.error('Failed to load logo image from /logo.jpg');
+                      console.error('Failed to load logo image');
                       const target = e.currentTarget;
-                      // Try alternative paths
-                      if (target.src.includes('/logo.jpg')) {
-                        target.src = './logo.jpg';
-                      } else if (target.src.includes('./logo.jpg')) {
-                        target.src = 'logo.jpg';
-                      } else {
-                        // Hide image if all paths fail
-                        target.style.display = 'none';
-                      }
+                      // Try alternative paths with cache busting
+                      const timestamp = `?${new Date().getTime()}`;
+                      const baseUrl = import.meta.env.VITE_BASE_URL || '/antigoneGs/';
+                      
+                      // Try different paths in sequence
+                      const tryPaths = [
+                        `${baseUrl}logo-new.jpg${timestamp}`,
+                        `${baseUrl}logo.jpg${timestamp}`,
+                        `/logo-new.jpg${timestamp}`,
+                        `/logo.jpg${timestamp}`,
+                        `./logo-new.jpg${timestamp}`,
+                        `./logo.jpg${timestamp}`,
+                      ];
+                      
+                      let currentIndex = 0;
+                      const tryNextPath = () => {
+                        if (currentIndex < tryPaths.length) {
+                          target.src = tryPaths[currentIndex];
+                          currentIndex++;
+                          
+                          // Check if image loaded successfully after a short delay
+                          setTimeout(() => {
+                            if (!target.complete || target.naturalWidth === 0) {
+                              tryNextPath();
+                            }
+                          }, 100);
+                        } else {
+                          // Hide image if all paths fail
+                          target.style.display = 'none';
+                        }
+                      };
+                      
+                      // Start trying paths
+                      tryNextPath();
                     }}
                     onLoad={() => {
                       console.log('Logo image loaded successfully');
@@ -115,11 +140,11 @@ const Login: React.FC = () => {
               </div>
             </div>
             
-            {/* Decorative rings */}
+            {/* Decorative rings - Lighter version for light theme */}
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
-              className="absolute inset-0 rounded-full border-2 border-purple-500/20"
+              className="absolute inset-0 rounded-full border-2 border-purple-200"
               style={{ width: 'calc(100% + 8px)', height: 'calc(100% + 8px)', margin: '-4px' }}
             ></motion.div>
           </motion.div>
@@ -129,7 +154,7 @@ const Login: React.FC = () => {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-2xl md:text-3xl font-bold font-serif text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-3"
+            className="text-2xl md:text-3xl font-bold font-serif text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-3"
           >
             {t('login.institution_name')}
           </motion.h1>
@@ -139,7 +164,7 @@ const Login: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
-            className="text-lg text-slate-300 mb-2"
+            className="text-lg text-gray-600 mb-2"
           >
             {t('login.welcome')}
           </motion.p>
@@ -149,7 +174,7 @@ const Login: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="flex items-center justify-center gap-2 text-sm text-slate-400 mt-4"
+            className="flex items-center justify-center gap-2 text-sm text-gray-500 mt-4"
           >
             <Code className="w-4 h-4" />
             <span>{t('login.developer')}</span>
@@ -157,13 +182,13 @@ const Login: React.FC = () => {
         </div>
 
         {/* Login Form Card */}
-        <div className="bg-gradient-to-br from-slate-800/50 to-purple-900/30 rounded-2xl p-8 backdrop-blur-sm border border-purple-500/20 shadow-2xl">
+        <div className="bg-white rounded-2xl p-8 border border-gray-200 shadow-lg">
           {/* Form Header */}
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold font-serif text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-2">
+            <h2 className="text-2xl font-bold font-serif text-gray-800 mb-2">
               {t('login.title')}
             </h2>
-            <p className="text-slate-400 text-sm">{t('login.subtitle')}</p>
+            <p className="text-gray-600 text-sm">{t('login.subtitle')}</p>
           </div>
 
           {/* Error Message */}
@@ -171,10 +196,10 @@ const Login: React.FC = () => {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6 p-4 bg-red-500/20 border border-red-500/50 rounded-lg flex items-center gap-3"
+              className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3"
             >
-              <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0" />
-              <p className="text-red-300 text-sm">{error}</p>
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+              <p className="text-red-700 text-sm">{error}</p>
             </motion.div>
           )}
 
@@ -182,21 +207,21 @@ const Login: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Username Field */}
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-slate-300 mb-2">
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('login.username')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="w-5 h-5 text-slate-400" />
+                  <User className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   id="username"
                   type="text"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 bg-slate-700/50 border ${
-                    error ? 'border-red-500/50' : 'border-slate-600'
-                  } rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent`}
+                  className={`w-full pl-10 pr-4 py-3 bg-white border ${
+                    error ? 'border-red-500' : 'border-gray-300'
+                  } rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                   placeholder={t('login.username_placeholder')}
                   autoComplete="username"
                   dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
@@ -206,21 +231,21 @@ const Login: React.FC = () => {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 {t('login.password')}
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="w-5 h-5 text-slate-400" />
+                  <Lock className="w-5 h-5 text-gray-400" />
                 </div>
                 <input
                   id="password"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full pl-10 pr-4 py-3 bg-slate-700/50 border ${
-                    error ? 'border-red-500/50' : 'border-slate-600'
-                  } rounded-lg text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent`}
+                  className={`w-full pl-10 pr-4 py-3 bg-white border ${
+                    error ? 'border-red-500' : 'border-gray-300'
+                  } rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent`}
                   placeholder={t('login.password_placeholder')}
                   autoComplete="current-password"
                   dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
@@ -232,7 +257,7 @@ const Login: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-purple-500/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -249,8 +274,8 @@ const Login: React.FC = () => {
           </form>
 
           {/* Info Message */}
-          <div className="mt-6 p-4 bg-blue-500/20 border border-blue-500/50 rounded-lg">
-            <p className="text-blue-300 text-sm text-center">{t('login.info')}</p>
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-blue-700 text-sm text-center">{t('login.info')}</p>
           </div>
         </div>
       </motion.div>

@@ -1,28 +1,36 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 
-export default defineConfig({
-  plugins: [react()],
-  base: '/antigoneGs/',
+export default defineConfig(({ mode }) => {
+  // Load env file based on `mode` in the current working directory
+  const env = loadEnv(mode, process.cwd(), '');
   
-  optimizeDeps: {
-    exclude: ['lucide-react'],
-  },
-  
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    emptyOutDir: true,
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
+  return {
+    plugins: [react()],
+    base: '/antigoneGs/',
+    define: {
+      'import.meta.env.VITE_BASE_URL': JSON.stringify('/antigoneGs/'),
+    },
+    
+    optimizeDeps: {
+      exclude: ['lucide-react'],
+    },
+    
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets',
+      emptyOutDir: true,
+      rollupOptions: {
+        input: {
+          main: resolve(__dirname, 'index.html'),
+        },
       },
     },
-  },
-  
-  server: {
-    port: 3000,
-    open: true,
-  }
+    
+    server: {
+      port: 3000,
+      open: true,
+    },
+  };
 });
